@@ -1,0 +1,11 @@
+*.gem
+/Gemfile.lock
+/.approvals
+/.bundle
+/coverage
+.DS_Store
+
+/.app_key
+/.app_secret
+/.access_token
+/.refresh_token

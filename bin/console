@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'rest-client'
+require 'aliexpress'
+
+%w(app_key app_secret access_token refresh_token).each do |method|
+  begin
+    AliExpress.send("#{method}=", File.read(".#{method}").chomp)
+    puts "AliExpress.#{method}: #{AliExpress.send(method)}"
+  rescue Errno::ENOENT
+    puts "No .#{method} file, using default: #{AliExpress.send(method)}"
+  end
+end
+
+AliExpress.logger.level = Logger::DEBUG
+
+require 'awesome_print'
+require 'pry'
+
+AwesomePrint.pry!
+Pry.start
