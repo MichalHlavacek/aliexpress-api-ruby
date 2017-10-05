@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/tophatter/aliexpress-api-ruby.svg?branch=master)](https://travis-ci.org/tophatter/aliexpress-api-ruby)
+[![Coverage Status](https://coveralls.io/repos/github/tophatter/aliexpress-api-ruby/badge.svg?branch=master)](https://coveralls.io/github/tophatter/aliexpress-api-ruby?branch=master)
+
 ### AliExpress SDK for Ruby:
 
 #### Authentication:
