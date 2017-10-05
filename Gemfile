@@ -5,12 +5,10 @@ group :development, :test do
   gem 'awesome_print'
   gem 'pry'
   gem 'rake'
-  gem 'rubocop', '0.47.1'
+  gem 'rubocop'
 end
 
 group :test do
   gem 'coveralls', require: false
   gem 'rspec'
-  gem 'vcr'
-  gem 'webmock'
 end
