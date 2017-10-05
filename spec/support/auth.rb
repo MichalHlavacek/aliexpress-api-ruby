@@ -5,7 +5,7 @@ RSpec.configure do |config|
     AliExpress.access_token  = 'fake-access-token'
     AliExpress.refresh_token = 'fake-refresh-token'
 
-    [:protocol, :host, :base_uri, :currency, :language, :logger].each do |method|
+    %i(protocol host base_uri currency language logger).each do |method|
       AliExpress.send("#{method}=", nil)
     end
   end

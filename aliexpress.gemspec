@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 # To publish the next version:
 # gem build aliexpress.gemspec
 # gem push aliexpress-{VERSION}.gem

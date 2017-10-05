@@ -5,10 +5,11 @@ require 'oauth2'
 
 module AliExpress
   class << self
-    attr_accessor :protocol, :host, :base_uri
     attr_accessor :client_id, :client_secret, :access_token, :refresh_token
-    attr_accessor :currency, :language
-    attr_accessor :logger
+
+    attr_writer :protocol, :host, :base_uri
+    attr_writer :currency, :language
+    attr_writer :logger
 
     def protocol
       @protocol || 'https'
