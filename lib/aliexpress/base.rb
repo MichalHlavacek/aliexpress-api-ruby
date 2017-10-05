@@ -3,18 +3,6 @@ module AliExpress
     include AliExpress
 
     class << self
-      def protocol
-        AliExpress.protocol
-      end
-
-      def host
-        AliExpress.host
-      end
-
-      def base_uri
-        AliExpress.base_uri
-      end
-
       def client_id
         AliExpress.client_id
       end
@@ -65,7 +53,7 @@ module AliExpress
         payload = params
         payload[:access_token] = access_token if auth
         sign_payload(path, payload) if sign
-        url = [base_uri, path].join('/')
+        url = [AliExpress.base_uri, path].join('/')
 
         resp = if method == :get
           unless params.length.zero?
