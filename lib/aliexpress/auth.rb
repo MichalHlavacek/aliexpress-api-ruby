@@ -7,10 +7,19 @@ module AliExpress
         oauth_params[:_aop_signature] = sign(oauth_params)
         logger.debug oauth_params
         url = oauth_client.authorize_url(oauth_params)
-        system('open', url) if RUBY_PLATFORM == 'x86_64-darwin16'
-        puts "Open #{url} in your browser, and then enter the code below."
-        print 'authorization_code> '
-        authorization_code = gets
+
+        if RUBY_PLATFORM == 'x86_64-darwin16'
+          begin
+            system('open', url)
+          rescue Exception => e # rubocop:disable Lint/RescueException
+            logger.debug "Call to open failed: #{e.message}"
+          end
+        end
+
+        $stdout.puts "Open #{url} in your browser, and then enter the code below."
+        $stdout.print 'authorization_code> '
+        authorization_code = $stdin.gets
+
         token = oauth_client.get_token(
           code: authorization_code,
           grant_type: 'authorization_code',
@@ -18,6 +27,7 @@ module AliExpress
           parse: :json,
           redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
         ).to_hash
+
         token
       end
 

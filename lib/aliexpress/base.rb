@@ -3,8 +3,6 @@ module AliExpress
     include AliExpress
 
     class << self
-      protected
-
       def protocol
         AliExpress.protocol
       end
@@ -55,18 +53,18 @@ module AliExpress
 
       private
 
+      def sign_payload(path, payload)
+        signature_factor = path + payload.map { |key, value| "#{key}#{value}" }.sort.join
+        payload[:_aop_signature] = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), client_secret, signature_factor).upcase
+        logger.debug "signature_factor=#{signature_factor}, signature=#{payload[:_aop_signature]}"
+      end
+
       def request(method:, protocol: 'param2', api_version: 1, api_namespace: 'aliexpress.open', api_call:, auth: true, sign: true, params: {})
         path = [protocol, api_version, api_namespace, api_call, client_id].join('/')
 
         payload = params
         payload[:access_token] = access_token if auth
-
-        if sign
-          signature_factor = path + payload.map { |key, value| "#{key}#{value}" }.sort.join
-          payload[:_aop_signature] = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), client_secret, signature_factor).upcase
-          logger.debug "signature_factor=#{signature_factor}, signature=#{payload[:_aop_signature]}"
-        end
-
+        sign_payload(path, payload) if sign
         url = [base_uri, path].join('/')
 
         resp = if method == :get

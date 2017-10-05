@@ -19,7 +19,7 @@ module AliExpress
     end
 
     def base_uri
-      "#{protocol}://#{host}/openapi"
+      @base_uri || "#{protocol}://#{host}/openapi"
     end
 
     def currency
@@ -31,11 +31,7 @@ module AliExpress
     end
 
     def logger
-      unless defined?(@logger)
-        @logger = Logger.new(STDOUT)
-        @logger.level = Logger::WARN
-      end
-
+      @logger ||= Logger.new('/dev/null')
       @logger
     end
   end
