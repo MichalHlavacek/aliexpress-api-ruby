@@ -1,11 +1,12 @@
 module AliExpress
-  class Auth < Resource
+  class Auth < Base
     class << self
-      def authorize
+      def authorize(state = nil)
         oauth_client = client
-        oauth_params = params
-        oauth_signature = sign(oauth_params)
-        url = oauth_client.authorize_url(oauth_params.merge(_aop_signature: oauth_signature))
+        oauth_params = params(state || SecureRandom.hex(24))
+        oauth_params[:_aop_signature] = sign(oauth_params)
+        logger.debug oauth_params
+        url = oauth_client.authorize_url(oauth_params)
         system('open', url) if RUBY_PLATFORM == 'x86_64-darwin16'
         puts "Open #{url} in your browser, and then enter the code below."
         print 'authorization_code> '
@@ -15,21 +16,26 @@ module AliExpress
           grant_type: 'authorization_code',
           need_refresh_token: 'true',
           parse: :json,
-          redirect_uri: redirect_uri
+          redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
         ).to_hash
-        puts "echo #{token[:access_token]} > .access_token"
-        puts "echo #{token[:refresh_token]} > .refresh_token"
         token
       end
 
       def refresh
-        if AliExpress.refresh_token
+        if refresh_token
           response = post(
-            "1/system.oauth2/getToken/#{AliExpress.app_key}",
-            grant_type: 'refresh_token',
-            client_id: AliExpress.client_id,
-            client_secret: AliExpress.client_secret,
-            refresh_token: AliExpress.refresh_token
+            api_call: 'getToken',
+            api_namespace: 'system.oauth2',
+            api_version: '1',
+            # protocol: 'http',
+            auth: false,
+            sign: false,
+            params: {
+              grant_type: 'refresh_token',
+              client_id: client_id,
+              client_secret: client_secret,
+              refresh_token: refresh_token
+            }
           )
           AliExpress.access_token = response['access_token']
         else
@@ -39,35 +45,31 @@ module AliExpress
 
       private
 
-      def redirect_uri
-        'urn:ietf:wg:oauth:2.0:oob'
-      end
-
       def client
         OAuth2::Client.new(
-          AliExpress.client_id,
-          AliExpress.client_secret,
+          client_id,
+          client_secret,
           site: 'https://gw.api.alibaba.com',
           authorize_url: '/auth/authorize.htm',
-          token_url: "/openapi/http/1/system.oauth2/getToken/#{AliExpress.client_id}"
+          token_url: "/openapi/http/1/system.oauth2/getToken/#{client_id}"
         )
-      end
-
-      def params
-        {
-          client_id: AliExpress.client_id,
-          redirect_uri: redirect_uri,
-          site: 'aliexpress',
-          state: SecureRandom.hex(24)
-        }
       end
 
       def sign(hash)
         OpenSSL::HMAC.hexdigest(
           OpenSSL::Digest.new('sha1'),
-          AliExpress.client_secret,
+          client_secret,
           hash.sort.flatten.join.to_s
         ).upcase
+      end
+
+      def params(state)
+        {
+          client_id: client_id,
+          redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
+          site: 'aliexpress',
+          state: state
+        }
       end
     end
   end

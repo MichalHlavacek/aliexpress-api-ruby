@@ -4,7 +4,7 @@ require 'bundler/setup'
 require 'rest-client'
 require 'aliexpress'
 
-%w(app_key app_secret access_token refresh_token).each do |method|
+%w(client_id client_secret access_token refresh_token).each do |method|
   begin
     AliExpress.send("#{method}=", File.read(".#{method}").chomp)
     puts "AliExpress.#{method}: #{AliExpress.send(method)}"
