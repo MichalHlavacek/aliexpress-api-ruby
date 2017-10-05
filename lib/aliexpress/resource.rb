@@ -22,7 +22,7 @@ module AliExpress
     end
 
     def persisted?
-      id.present? # @TODO: Should this be internal_id?
+      id.present?
     end
 
     def to_h

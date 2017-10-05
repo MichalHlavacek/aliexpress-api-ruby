@@ -77,7 +77,7 @@ module AliExpress
           end
 
           logger.debug "GET #{url}"
-          RestClient.get([base_uri, path].join('/'))
+          RestClient.get(url)
         else
           logger.debug "POST #{url} | #{payload}"
           RestClient.post(url, payload)
