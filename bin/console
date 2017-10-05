@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'bundler/setup'
-require 'rest-client'
+require 'bundler/setup' # Otherwise "require 'aliexpress'" won't work.
 require 'aliexpress'
+require 'awesome_print'
+require 'pry'
 
 %w(client_id client_secret access_token refresh_token).each do |method|
   begin
@@ -14,9 +15,6 @@ require 'aliexpress'
 end
 
 AliExpress.logger.level = Logger::DEBUG
-
-require 'awesome_print'
-require 'pry'
 
 AwesomePrint.pry!
 Pry.start

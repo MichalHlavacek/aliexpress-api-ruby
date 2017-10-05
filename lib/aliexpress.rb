@@ -1,4 +1,4 @@
-require 'active_model'
+require 'rest-client'
 require 'json'
 require 'addressable'
 require 'oauth2'
@@ -42,7 +42,6 @@ module AliExpress
 end
 
 require File.dirname(__FILE__) + '/aliexpress/base'
-require File.dirname(__FILE__) + '/aliexpress/resource'
 require File.dirname(__FILE__) + '/aliexpress/auth'
 require File.dirname(__FILE__) + '/aliexpress/product'
 require File.dirname(__FILE__) + '/aliexpress/affiliate'

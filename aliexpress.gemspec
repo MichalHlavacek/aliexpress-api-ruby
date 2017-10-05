@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 
 # To publish the next version:
-# gem build tophatter-merchant.gemspec
-# gem push tophatter-merchant-{VERSION}.gem
+# gem build aliexpress.gemspec
+# gem push aliexpress-{VERSION}.gem
 Gem::Specification.new do |s|
   s.name        = 'aliexpress'
-  s.version     = '0.1'
+  s.version     = '0.2'
   s.platform    = Gem::Platform::RUBY
   s.licenses    = ['MIT']
   s.authors     = ['Chris Estreich']
@@ -19,8 +19,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '~> 2.0'
 
   s.add_dependency 'rest-client', '~> 1.6'
-  s.add_dependency 'activemodel', '~> 4.2'
-  s.add_dependency 'addressable', '~> 2.5'
+  s.add_dependency 'addressable'
   s.add_dependency 'oauth2'
 
   s.post_install_message = 'Documentation is available at: http://isvus.aliexpress.com/isv/index.htm'
