@@ -1,5 +1,5 @@
-require 'rest-client'
 require 'json'
+require 'rest-client'
 require 'addressable'
 require 'oauth2'
 
@@ -39,6 +39,7 @@ module AliExpress
 end
 
 require File.dirname(__FILE__) + '/aliexpress/base'
+require File.dirname(__FILE__) + '/aliexpress/response_error'
 require File.dirname(__FILE__) + '/aliexpress/auth'
 require File.dirname(__FILE__) + '/aliexpress/product'
 require File.dirname(__FILE__) + '/aliexpress/affiliate'

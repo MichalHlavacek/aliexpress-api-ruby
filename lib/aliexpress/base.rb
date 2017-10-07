@@ -1,7 +1,5 @@
 module AliExpress
   class Base
-    include AliExpress
-
     class << self
       def client_id
         AliExpress.client_id

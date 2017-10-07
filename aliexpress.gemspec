@@ -3,7 +3,7 @@
 # gem push aliexpress-{VERSION}.gem
 Gem::Specification.new do |s|
   s.name        = 'aliexpress'
-  s.version     = '0.2'
+  s.version     = '0.3'
   s.platform    = Gem::Platform::RUBY
   s.licenses    = ['MIT']
   s.authors     = ['Chris Estreich']

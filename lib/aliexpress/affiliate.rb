@@ -34,25 +34,13 @@ module AliExpress
       'Weddings & Events': 320
     }.freeze
 
+    SUCCESS = 20010000
+
     ERRORS = {
       20030120 => 'Discount input parameter error.'
     }.freeze
 
-    FIELDS = %w(
-      productId
-      productTitle
-      productUrl
-      imageUrl
-      allImageUrls
-      originalPrice
-      salePrice
-      localPrice
-      discount
-      volume
-      packageType
-      lotNum
-      validTime
-    ).freeze
+    FIELDS = %w(productId productTitle productUrl imageUrl allImageUrls originalPrice salePrice localPrice discount volume).freeze
 
     class << self
       def list_promotion_product(keywords:, fields: FIELDS)
@@ -64,10 +52,10 @@ module AliExpress
           }
         )
 
-        if (error_code = response['errorCode']) == 20010000
+        if response['errorCode'] == SUCCESS
           response.key?('result') ? response['result']['products'] : []
         else
-          raise ERRORS[error_code]
+          raise_response_error(response)
         end
       end
 
@@ -80,29 +68,29 @@ module AliExpress
           }
         )
 
-        if (error_code = response['errorCode']) == 20010000
+        if response['errorCode'] == SUCCESS
           response['result'] || {}
         else
-          raise ERRORS[error_code]
+          raise_response_error(response)
         end
       end
 
       # The list of categories can be found here:
       # https://portals.aliexpress.com/help/help_center_API.html
-      def list_hot_products(category_id)
+      def list_hot_products(category)
         response = get(
           api_call: 'api.listHotProducts',
           params: {
             localCurrency: currency,
             language: language,
-            categoryId: category_id
+            categoryId: CATEGORIES[category] || category
           }
         )
 
-        if (error_code = response['errorCode']) == 20010000
+        if response['errorCode'] == SUCCESS
           response.key?('result') ? response['result']['products'] : []
         else
-          raise ERRORS[error_code]
+          raise_response_error(response)
         end
       end
 
@@ -119,6 +107,14 @@ module AliExpress
           auth: false,
           sign: false
         }
+      end
+
+      def raise_response_error(response)
+        raise ResponseError.new(
+          code: response['error_code'] || response['errorCode'],
+          message: response['error_message'] || ERRORS[response['errorCode']],
+          response: response
+        )
       end
     end
   end
