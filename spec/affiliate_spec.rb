@@ -9,34 +9,62 @@ describe AliExpress::Affiliate do
     mock
   end
 
-  let(:products) { [] }
-  let(:product) { {} }
-  let(:json) { { errorCode: 20010000, results: { products: products } }.to_json }
+  let(:success) { 20010000 }
+  let(:hash) { { 'errorCode' => success } }
+  let(:json) { hash.to_json }
 
-  describe '.list_promotion_product' do
-    let(:url) { 'https://gw.api.alibaba.com/openapi/param2/2/portals.open/api.listPromotionProduct/fake-client-id?fields=productId&keywords=drone' }
+  # before do
+  #   AliExpress.logger = Logger.new(STDOUT)
+  #   AliExpress.logger.level = Logger::DEBUG
+  # end
 
-    it 'returns products' do
+  describe '.search' do
+    let(:url) { 'https://gw.api.alibaba.com/openapi/param2/2/portals.open/api.listPromotionProduct/fake-client-id?categoryId=3&fields=productId&keywords=drone&language=en&localCurrency=USD&pageNo=2&pageSize=5&sort=orignalPriceDown' }
+
+    it 'returns a successful response' do
       expect(RestClient).to receive(:get).exactly(1).times.with(url).and_return(response)
-      expect(AliExpress::Affiliate.list_promotion_product(keywords: 'drone', fields: %w(productId))).to eq(products)
+      response = AliExpress::Affiliate.search(query: 'drone', filters: { category: 'Apparel & Accessories' }, sort: 'orignalPriceDown', page: 2, per_page: 5, fields: %w(productId))
+      expect(response['errorCode']).to eq(success)
     end
   end
 
-  describe '.get_promotion_product_detail' do
-    let(:url) { 'https://gw.api.alibaba.com/openapi/param2/2/portals.open/api.getPromotionProductDetail/fake-client-id?fields=productId&productId=12345' }
+  describe '.find' do
+    let(:url) { 'https://gw.api.alibaba.com/openapi/param2/2/portals.open/api.getPromotionProductDetail/fake-client-id?fields=productId&language=en&localCurrency=USD&productId=12345' }
 
     it 'returns a product' do
       expect(RestClient).to receive(:get).exactly(1).times.with(url).and_return(response)
-      expect(AliExpress::Affiliate.get_promotion_product_detail(12345, fields: %w(productId))).to eq(product)
+      response = AliExpress::Affiliate.find(12345, fields: %w(productId))
+      expect(response['errorCode']).to eq(success)
     end
   end
 
-  describe '.list_hot_products' do
+  describe '.similar' do
+    let(:url) { 'https://gw.api.alibaba.com/openapi/param2/2/portals.open/api.listSimilarProducts/fake-client-id?language=en&localCurrency=USD&productId=12345' }
+
+    it 'returns a product' do
+      expect(RestClient).to receive(:get).exactly(1).times.with(url).and_return(response)
+      response = AliExpress::Affiliate.similar(12345)
+      expect(response['errorCode']).to eq(success)
+    end
+  end
+
+  describe '.popular' do
     let(:url) { 'https://gw.api.alibaba.com/openapi/param2/2/portals.open/api.listHotProducts/fake-client-id?categoryId=3&language=en&localCurrency=USD' }
 
-    it 'returns products' do
-      expect(RestClient).to receive(:get).exactly(1).times.with(url).and_return(response)
-      expect(AliExpress::Affiliate.list_hot_products(3)).to eq(products)
+    context 'when a category id is used' do
+      it 'returns a successful response' do
+        expect(RestClient).to receive(:get).exactly(1).times.with(url).and_return(response)
+        response = AliExpress::Affiliate.popular(3)
+        expect(response['errorCode']).to eq(success)
+      end
+    end
+
+    context 'when a category name is used' do
+      it 'returns a successful response' do
+        expect(RestClient).to receive(:get).exactly(1).times.with(url).and_return(response)
+        response = AliExpress::Affiliate.popular('Apparel & Accessories')
+        expect(response['errorCode']).to eq(success)
+      end
     end
   end
 end
