@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '~> 2.0'
 
-  s.add_dependency 'rest-client', '~> 1.6'
+  s.add_dependency 'rest-client', '~> 2.0'
   s.add_dependency 'addressable'
   s.add_dependency 'oauth2'
 
